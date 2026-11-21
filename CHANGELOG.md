@@ -1,3 +1,9 @@
+# Calendario 0.2.0
+
+- **Resumen de familia**: Inicio muestra «Hoy en tu calendario» (el feriado y los eventos de hoy, hasta 5) en su pantalla
+  «Hoy». Lo da `SummaryProvider` (`${applicationId}.summary`), solo a apps firmadas por el mismo desarrollador.
+- 16 pruebas.
+
 # Calendario 0.1.0
 
 Primera versión: calendario en negro con acento rojo.

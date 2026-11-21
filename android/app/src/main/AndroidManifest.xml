@@ -9,6 +9,9 @@
     <!-- «Redireccionar a Hub»: only apps signed with the same key (Gateway Hub) get this permission. -->
     <permission android:name="com.zirakusa.gatewayhub.permission.LINK" android:protectionLevel="signature"
         android:label="@string/hub_link_permission" />
+    <!-- The family summary («Hoy» in Inicio): only apps signed with the same key may read it. -->
+    <permission android:name="com.zirakusa.family.permission.SUMMARY" android:protectionLevel="signature"
+        android:label="@string/summary_permission" />
     <!-- «Ir al Hub» opens the Gateway Hub app, when it is installed. -->
     <queries><package android:name="com.zirakusa.gatewayhub" /></queries>
 
@@ -34,6 +37,7 @@
             </intent-filter>
             <meta-data android:name="com.zirakusa.gatewayhub.module" android:value="calendar_" />
             <meta-data android:name="com.zirakusa.gatewayhub.link" android:value="${applicationId}.hublink" />
+            <meta-data android:name="com.zirakusa.family.summary" android:value="${applicationId}.summary" />
         </activity>
         <receiver android:name=".ReminderReceiver" android:exported="false">
             <intent-filter>
@@ -44,6 +48,8 @@
                 <action android:name="android.app.action.SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED" />
             </intent-filter>
         </receiver>
+        <provider android:name=".SummaryProvider" android:authorities="${applicationId}.summary"
+            android:exported="true" android:permission="com.zirakusa.family.permission.SUMMARY" />
         <provider android:name=".mcp.HubLinkProvider" android:authorities="${applicationId}.hublink"
             android:exported="true" android:permission="com.zirakusa.gatewayhub.permission.LINK" />
     </application>

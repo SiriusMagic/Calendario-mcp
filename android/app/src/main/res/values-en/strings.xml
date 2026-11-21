@@ -147,4 +147,6 @@
         <item quantity="one">%1$d day before</item>
         <item quantity="other">%1$d days before</item>
     </plurals>
+    <string name="summary_title">Today in your calendar</string>
+    <string name="summary_permission">Summary for Inicio</string>
 </resources>

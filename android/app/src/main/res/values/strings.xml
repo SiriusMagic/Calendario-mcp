@@ -149,4 +149,6 @@
         <item quantity="many">%1$d días antes</item>
         <item quantity="other">%1$d días antes</item>
     </plurals>
+    <string name="summary_title">Hoy en tu calendario</string>
+    <string name="summary_permission">Resumen para Inicio</string>
 </resources>

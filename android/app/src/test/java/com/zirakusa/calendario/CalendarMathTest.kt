@@ -113,4 +113,14 @@ class CalendarMathTest {
         assertEquals(FirstDay.REGION, s.firstDay); assertTrue(s.holidays); assertTrue(s.reminders); assertEquals(View.MONTH, s.view)
         s.firstDay = FirstDay.SUNDAY; s.view = View.AGENDA; assertEquals(FirstDay.SUNDAY, s.firstDay); assertEquals(View.AGENDA, s.view)
     }
+
+    @Test fun summaryForInicio() {
+        val day = d(11, 21)
+        val events = listOf(Event(1, "Reunión", start = t(11, 21, 9)), Event(2, "", allDay = true, start = day.atStartOfDay(), end = day.atStartOfDay()),
+            Event(3, "Turno", start = t(11, 20, 22), end = t(11, 21, 6)))
+        val lines = SummaryLines.today(Calendar.on(events, day), day, "Navidad", "Todo el día", "(Sin título)") { h, m -> "%02d:%02d".format(h, m) }
+        assertEquals(listOf("Navidad", "Todo el día · Turno", "Todo el día · (Sin título)", "09:00 Reunión"), lines)   // the night shift began yesterday
+        assertTrue(SummaryLines.today(emptyList(), day, null, "", "") { _, _ -> "" }.isEmpty())
+        assertEquals(SummaryLines.MAX, SummaryLines.today(List(9) { Calendar.on(events, day).first() }, day, null, "a", "b") { _, _ -> "" }.size)
+    }
 }
