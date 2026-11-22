@@ -38,8 +38,8 @@ data class Token(val id: String, val name: String, val secret: String, val acces
         }.getOrDefault(emptyList())
         fun serialize(tokens: List<Token>) = JSONArray(tokens.map { it.json() }).toString()
 
-        /** "cal_" + 256 random bits: the prefix lets secret scanners recognise a leaked Calendario token. */
-        fun secret(): String = "cal_" + Base64.getUrlEncoder().withoutPadding().encodeToString(ByteArray(32).also(SecureRandom()::nextBytes))
+        /** "cld_" + 256 random bits: the prefix lets secret scanners recognise a leaked Calendario token. */
+        fun secret(): String = "cld_" + Base64.getUrlEncoder().withoutPadding().encodeToString(ByteArray(32).also(SecureRandom()::nextBytes))
         fun id(): String = ByteArray(6).also(SecureRandom()::nextBytes).joinToString("") { "%02x".format(it) }
     }
 }

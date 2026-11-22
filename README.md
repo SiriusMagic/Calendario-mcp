@@ -3,7 +3,7 @@
 Calendario para Android en negro con acento rojo. Parte de la familia de Stone, Luma, Calculadora, Notas, Filem, Nivel y
 Reloj: tu IA (Claude, ChatGPT…) puede **leer y crear tus eventos** por MCP.
 
-## Estado (0.2.0)
+## Estado (0.3.0)
 
 - **Vistas:** Año, Mes, Semana y Agenda (botón del calendario arriba). Deslizar cambia de mes, semana o año; «Hoy»
   vuelve a hoy y «+» crea un evento.
@@ -23,7 +23,7 @@ Reloj: tu IA (Claude, ChatGPT…) puede **leer y crear tus eventos** por MCP.
 - **Resumen para Inicio:** la tarjeta «Hoy en tu calendario» en la pantalla «Hoy» de Inicio.
 - Sin anuncios ni estadísticas; internet solo para el Modo MCP (apagado de fábrica).
 
-APK: [`android/Calendario-0.2.0.apk`](android/Calendario-0.2.0.apk) (`com.zirakusa.calendario`, firmado como Stone y
+APK: [`android/Calendario-0.3.0.apk`](android/Calendario-0.3.0.apk) (`com.zirakusa.calendario`, firmado como Stone y
 Gateway Hub).
 
 ## Compilar y probar

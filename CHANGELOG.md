@@ -1,3 +1,9 @@
+# Calendario 0.3.0
+
+- Los tokens nuevos empiezan por **`cld_`** (antes `cal_`, que ya es de la Calculadora: Gateway Hub los confundía al
+  vincular con token). Los tokens ya creados siguen funcionando; para que el hub los reconozca bien, crea uno nuevo.
+- 16 pruebas.
+
 # Calendario 0.2.0
 
 - **Resumen de familia**: Inicio muestra «Hoy en tu calendario» (el feriado y los eventos de hoy, hasta 5) en su pantalla

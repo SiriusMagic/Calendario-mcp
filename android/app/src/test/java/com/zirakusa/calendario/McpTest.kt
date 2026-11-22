@@ -33,9 +33,9 @@ class McpTest {
         override fun delete(id: Long) = store.delete(id)
         override fun holidays() = shown
     }
-    private val writer = Token("w", "Claude", "cal_" + "w".repeat(40), Access.WRITE, Kind.HUB, "Agenda")
-    private val reader = Token("r", "Lector", "cal_" + "r".repeat(40), Access.READ)
-    private val paused = Token("p", "Viejo", "cal_" + "p".repeat(40), Access.WRITE, paused = true)
+    private val writer = Token("w", "Claude", "cld_" + "w".repeat(40), Access.WRITE, Kind.HUB, "Agenda")
+    private val reader = Token("r", "Lector", "cld_" + "r".repeat(40), Access.READ)
+    private val paused = Token("p", "Viejo", "cld_" + "p".repeat(40), Access.WRITE, paused = true)
     private val handler = McpHandler({ listOf(writer, reader, paused) }, data, "0.1.0")
 
     init {
@@ -112,11 +112,11 @@ class McpTest {
     @Test fun wrongAndPausedTokensAndHubLink() = runBlocking {
         val body = """{"jsonrpc":"2.0","id":1,"method":"tools/list"}"""
         assertEquals(401, handler.handle("POST", "/mcp", mapOf("Authorization" to "Bearer ${paused.secret}"), emptyMap(), body).status)
-        assertEquals(401, handler.handle("POST", "/mcp", mapOf("Authorization" to "Bearer cal_wrong"), emptyMap(), body).status)
+        assertEquals(401, handler.handle("POST", "/mcp", mapOf("Authorization" to "Bearer cld_wrong"), emptyMap(), body).status)
         assertEquals(401, handler.handle("POST", "/mcp", emptyMap(), emptyMap(), body).status)
         assertEquals(200, handler.handle("POST", "/mcp", emptyMap(), mapOf("token" to reader.secret), body).status)
         assertEquals(404, handler.handle("POST", "/other", emptyMap(), emptyMap(), body).status)
-        assertTrue(Token.secret().startsWith("cal_"))
+        assertTrue(Token.secret().startsWith("cld_"))
         assertEquals("NOT_SAME_DEVELOPER", HubLink.answer(false).getString("error"))
         assertEquals("REDIRECT_OFF", HubLink.answer(true).getString("error"))
     }
