@@ -1,3 +1,8 @@
+# Calendario 0.3.2
+
+- **Posponer**: nueva herramienta `calendar_event_move` (mueve un evento a otro día y, si quieres, a otra hora; conserva su
+  duración, repetición, aviso, lugar y notas). Lucía la usa: «pospón la reunión con Ana para el viernes a las 4».
+
 # Calendario 0.3.1
 
 - **Conectar todas** (Gateway Hub 0.0.21): con un toque en el Hub se activa aquí «Redireccionar a Hub» y la app queda

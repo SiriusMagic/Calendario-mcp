@@ -61,6 +61,10 @@ object CalendarTools {
                 "important" to prop("boolean", "A «Día importante»."))),
         Tool("calendar_event_delete", "Deletes an event (every repetition).", true,
             schema(listOf("id"), "id" to prop("integer", "The event's id (from calendar_events)."))),
+        Tool("calendar_event_move", "Moves (postpones) an event to another day and, optionally, another start time. It keeps " +
+            "its length, repetition, reminder, place and notes.", true,
+            schema(listOf("id", "date"), "id" to prop("integer", "The event's id (from calendar_events)."),
+                "date" to prop("string", "YYYY-MM-DD, the new first day."), "time" to prop("string", "HH:MM new start, 24 h; omit to keep it."))),
     )
 
     fun available(access: Access) = tools.filter { !it.write || access == Access.WRITE }
@@ -81,12 +85,25 @@ object CalendarTools {
                     .map { JSONObject().put("date", it.first.toString()).put("holiday", it.second.name.lowercase()) }))
             }
             "calendar_event_create" -> JSONObject().put("event", describe(data.save(create(args)), null))
+            "calendar_event_move" -> {
+                val id = (args.opt("id") as? Number)?.takeIf { it is Int || it is Long }?.toLong() ?: throw ToolFailure("BAD_ARGUMENT", "id must be an integer.")
+                val day = date(args, "date")!!; val at = time(args, "time")
+                val e = data.events().firstOrNull { it.id == id } ?: throw ToolFailure("NOT_FOUND", "No event with id $id.")
+                if (at != null && e.allDay) throw ToolFailure("BAD_ARGUMENT", "An all-day event has no time; give only «date».")
+                JSONObject().put("event", describe(data.save(move(e, day, at)), null))
+            }
             else -> {
                 val id = (args.opt("id") as? Number)?.takeIf { it is Int || it is Long }?.toLong() ?: throw ToolFailure("BAD_ARGUMENT", "id must be an integer.")
                 if (!data.delete(id)) throw ToolFailure("NOT_FOUND", "No event with id $id.")
                 JSONObject().put("deleted", id)
             }
         }
+    }
+
+    /** The same event on another day (and start time): its length stays. Pure. */
+    fun move(e: Event, day: LocalDate, at: LocalTime?): Event {
+        val start = day.atTime(at ?: e.start.toLocalTime())
+        return e.copy(start = start, end = start.plus(java.time.Duration.between(e.start, e.end)))
     }
 
     private fun date(args: JSONObject, key: String): LocalDate? = if (!args.has(key)) null

@@ -12,8 +12,8 @@ android {
         applicationId = "com.zirakusa.calendario"
         minSdk = 26
         targetSdk = 36
-        versionCode = 4
-        versionName = "0.3.1"
+        versionCode = 5
+        versionName = "0.3.2"
         // Modo MCP: the same public relay as Stone, Luma, Calculadora and Notas (one device id per app). Empty = no MCP.
         val relayUrl = (project.findProperty("calendarioRelayUrl") as String?).orEmpty().trimEnd('/')
         buildConfigField("String", "RELAY_URL", "\"$relayUrl\"")

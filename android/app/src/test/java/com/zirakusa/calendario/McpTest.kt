@@ -55,7 +55,7 @@ class McpTest {
     private fun names(token: Token) = rpc(token, "tools/list").getJSONArray("tools").let { t -> (0 until t.length()).map { t.getJSONObject(it).getString("name") } }
 
     @Test fun listsTheTools() {
-        assertEquals(listOf("calendar_events", "calendar_day", "calendar_holidays", "calendar_event_create", "calendar_event_delete"), names(writer))
+        assertEquals(listOf("calendar_events", "calendar_day", "calendar_holidays", "calendar_event_create", "calendar_event_delete", "calendar_event_move"), names(writer))
         assertEquals(listOf("calendar_events", "calendar_day", "calendar_holidays"), names(reader))
         val init = rpc(writer, "initialize")
         assertEquals("calendario", init.getJSONObject("serverInfo").getString("name"))
@@ -82,6 +82,12 @@ class McpTest {
         assertTrue(all.getBoolean("all_day")); assertEquals("2026-12-27", all.getString("end"))
         val imp = ok("calendar_event_create", JSONObject().put("title", "Aniversario").put("date", "2015-06-14").put("important", true)).getJSONObject("event")
         assertEquals("important", imp.getString("kind")); assertEquals("yearly", imp.getString("repeat"))
+        // Postponed: another day and time, the same hour long; without «time» it keeps its hour.
+        val moved = ok("calendar_event_move", JSONObject().put("id", e.getLong("id")).put("date", "2026-11-27").put("time", "10:00")).getJSONObject("event")
+        assertEquals("2026-11-27T10:00", moved.getString("start")); assertEquals("2026-11-27T11:00", moved.getString("end")); assertEquals(e.getLong("id"), moved.getLong("id"))
+        assertEquals("2026-11-28T10:00", ok("calendar_event_move", JSONObject().put("id", e.getLong("id")).put("date", "2026-11-28")).getJSONObject("event").getString("start"))
+        assertEquals("BAD_ARGUMENT", code("calendar_event_move", JSONObject().put("id", all.getLong("id")).put("date", "2026-12-21").put("time", "09:00")))
+        assertEquals("2026-12-28", ok("calendar_event_move", JSONObject().put("id", all.getLong("id")).put("date", "2026-12-21")).getJSONObject("event").getString("end"))
         assertEquals(e.getLong("id"), ok("calendar_event_delete", JSONObject().put("id", e.getLong("id"))).getLong("deleted"))
         assertEquals(4, store.list().size)
     }
@@ -98,11 +104,15 @@ class McpTest {
         assertEquals("BAD_ARGUMENT", code("calendar_event_create", JSONObject().put("title", "X").put("date", "2026-11-24").put("repeat", "hourly")))
         assertEquals("BAD_ARGUMENT", code("calendar_event_create", JSONObject().put("title", "X").put("date", "2026-11-24").put("sql", "DROP")))
         assertEquals("BAD_ARGUMENT", code("calendar_event_delete", JSONObject().put("id", "1")))
+        assertEquals("BAD_ARGUMENT", code("calendar_event_move", JSONObject().put("id", 1).put("date", "mañana")))
+        assertEquals("BAD_ARGUMENT", code("calendar_event_move", JSONObject().put("id", 1).put("date", "2026-12-01").put("time", "25:00")))
+        assertEquals("BAD_ARGUMENT", code("calendar_event_move", JSONObject().put("id", 1)))
         assertEquals(2, store.list().size)
     }
 
     @Test fun notFoundUnknownAndReadOnly() {
         assertEquals("NOT_FOUND", code("calendar_event_delete", JSONObject().put("id", 99)))
+        assertEquals("NOT_FOUND", code("calendar_event_move", JSONObject().put("id", 99).put("date", "2026-12-01")))
         assertEquals("UNKNOWN_TOOL", code("calendar_shell"))
         assertEquals("READ_ONLY", code("calendar_event_delete", JSONObject().put("id", 1), reader))
         assertEquals("READ_ONLY", code("calendar_event_create", JSONObject().put("title", "X").put("date", "2026-11-24"), reader))
