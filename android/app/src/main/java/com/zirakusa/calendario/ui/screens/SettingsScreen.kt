@@ -1,5 +1,7 @@
 package com.zirakusa.calendario.ui.screens
 
+import com.zirakusa.calendario.IconCard
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -63,6 +65,7 @@ import com.zirakusa.calendario.ui.theme.CalColors
             }
             Item(stringResource(R.string.mcp_title), "$status · ${stringResource(R.string.mcp_settings_hint)}") { state.page = Page.MCP }
         }
+        IconCard(CalColors.Card, CalColors.Text, CalColors.Muted, CalColors.Accent, androidx.compose.ui.graphics.Color(0xFFFFFFFF))
         ThemeCard(state.themeMode, state.accent, state::changeTheme, state::changeAccent)
         Caption(stringResource(R.string.about))
         Group {

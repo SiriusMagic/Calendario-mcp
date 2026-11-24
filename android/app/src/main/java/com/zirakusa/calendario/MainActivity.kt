@@ -37,6 +37,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        AppIcon.load(this)
         enableEdgeToEdge()
         val region = WeekFields.of(resources.configuration.locales[0]).firstDayOfWeek
         state = CalState(SharedValues(this), regionFirstDay = region, onChanged = { Reminders.sync(this) })
