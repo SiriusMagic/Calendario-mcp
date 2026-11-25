@@ -1,8 +1,8 @@
 <resources>
-    <color name="launcher_background">#FFFFFF</color>
-    <!-- The other launcher icons (Ajustes › Icono de la app). -->
-    <color name="launcher_background_light">#F2F2F2</color>
-    <color name="launcher_background_gold">#F5C518</color>
-    <color name="launcher_background_blue">#1565C0</color>
-    <color name="launcher_background_green">#1B5E20</color>
+    <!-- Behind each launcher icon (Ajustes › Icono de la app); «Dibujo» is the default. -->
+    <color name="launcher_background_cartoon">#0070E9</color>
+    <color name="launcher_background_clay">#205ADC</color>
+    <color name="launcher_background_oil">#C13513</color>
+    <color name="launcher_background_glass">#0062AE</color>
+    <color name="launcher_background_pixel">#0047DB</color>
 </resources>

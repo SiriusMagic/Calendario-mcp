@@ -1,4 +1,4 @@
-<!-- Calendario: a page of a desk calendar with a red top band and two rings. -->
+<!-- Calendario: a page of a desk calendar with a red top band and two rings (themed icon, Android 13+; launcher icons are mipmap/ic_launcher_*). -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="108dp" android:height="108dp"
     android:viewportWidth="108" android:viewportHeight="108">
     <path android:fillColor="#EB4D3D" android:pathData="M36,36h36a6,6 0,0 1,6 6v6h-48v-6a6,6 0,0 1,6 -6z" />

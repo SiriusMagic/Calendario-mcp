@@ -1,8 +1,0 @@
-<!-- Calendario: a page of a desk calendar with a red top band and two rings. -->
-<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="108dp" android:height="108dp"
-    android:viewportWidth="108" android:viewportHeight="108">
-    <path android:fillColor="#90CAF9" android:pathData="M36,36h36a6,6 0,0 1,6 6v6h-48v-6a6,6 0,0 1,6 -6z" />
-    <path android:fillColor="#1565C0" android:pathData="M30,50h48v18a6,6 0,0 1,-6 6h-36a6,6 0,0 1,-6 -6z" />
-    <path android:fillColor="#FFFFFF" android:pathData="M37,56h6v5h-6zM51,56h6v5h-6zM65,56h6v5h-6zM37,65h6v5h-6zM51,65h6v5h-6z" />
-    <path android:fillColor="#1565C0" android:pathData="M42,31h4v9h-4zM62,31h4v9h-4z" />
-</vector>

@@ -1,3 +1,8 @@
+# Calendario 0.4.0
+
+- **Iconos nuevos**: Dibujo (el de fábrica), 3D, Óleo, Cristal y Píxel, en Ajustes › Icono de la app. Se quitan los
+  anteriores; si tenías uno elegido, pasa solo al nuevo que ocupa su lugar.
+
 # Calendario 0.3.2
 
 - **Posponer**: nueva herramienta `calendar_event_move` (mueve un evento a otro día y, si quieres, a otra hora; conserva su
