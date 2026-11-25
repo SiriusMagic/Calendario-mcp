@@ -18,7 +18,6 @@ import com.zirakusa.calendario.ui.screens.EventEditor
 import com.zirakusa.calendario.ui.screens.GoToDialog
 import com.zirakusa.calendario.ui.screens.Header
 import com.zirakusa.calendario.ui.screens.ImportantScreen
-import com.zirakusa.calendario.ui.screens.McpScreen
 import com.zirakusa.calendario.ui.screens.MonthScreen
 import com.zirakusa.calendario.ui.screens.SearchScreen
 import com.zirakusa.calendario.ui.screens.SettingsScreen
@@ -31,7 +30,7 @@ class AppActions(
     val saved: () -> Unit = {},
     val toast: (String) -> Unit = {},
     val copy: (String) -> Unit = {},
-    val goToHub: () -> Unit = {},
+    val openArka: () -> Unit = {},
 )
 
 /** The whole app: the chosen view under the header with «Hoy» and «+», or a page over it. */
@@ -40,8 +39,7 @@ class AppActions(
         Page.EDITOR -> return EventEditor(state, actions.saved)
         Page.SEARCH -> return SearchScreen(state)
         Page.IMPORTANT -> return ImportantScreen(state)
-        Page.SETTINGS -> return SettingsScreen(state, actions.toast)
-        Page.MCP -> return McpScreen(actions.copy, actions.goToHub) { state.page = Page.SETTINGS }
+        Page.SETTINGS -> return SettingsScreen(state, actions.toast, actions.openArka)
         Page.MAIN -> Unit
     }
     Box(Modifier.fillMaxSize().background(CalColors.Background)) {

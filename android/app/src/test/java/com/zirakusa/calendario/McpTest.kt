@@ -7,7 +7,6 @@ import com.zirakusa.calendario.data.Recur
 import com.zirakusa.calendario.mcp.Access
 import com.zirakusa.calendario.mcp.CalendarData
 import com.zirakusa.calendario.mcp.HubLink
-import com.zirakusa.calendario.mcp.Kind
 import com.zirakusa.calendario.mcp.McpHandler
 import com.zirakusa.calendario.mcp.Token
 import kotlinx.coroutines.runBlocking
@@ -21,7 +20,7 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import java.time.LocalDateTime
 
-/** Calendario's MCP: tools list, good calls, bad arguments, not found, read-only tokens, wrong and paused tokens, hub link. */
+/** Calendario's MCP: tools list, good calls, bad arguments, not found, read-only tokens, wrong tokens, hub link. */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])
 class McpTest {
@@ -33,10 +32,9 @@ class McpTest {
         override fun delete(id: Long) = store.delete(id)
         override fun holidays() = shown
     }
-    private val writer = Token("w", "Claude", "cld_" + "w".repeat(40), Access.WRITE, Kind.HUB, "Agenda")
-    private val reader = Token("r", "Lector", "cld_" + "r".repeat(40), Access.READ)
-    private val paused = Token("p", "Viejo", "cld_" + "p".repeat(40), Access.WRITE, paused = true)
-    private val handler = McpHandler({ listOf(writer, reader, paused) }, data, "0.1.0")
+    private val writer = Token("cld_" + "w".repeat(40), Access.WRITE)
+    private val reader = Token("cld_" + "r".repeat(40), Access.READ)
+    private val handler = McpHandler({ listOf(writer, reader) }, data, "0.1.0")
 
     init {
         store.save(Event(title = "Yoga", start = LocalDateTime.of(2026, 11, 2, 18, 0), end = LocalDateTime.of(2026, 11, 2, 19, 0), recur = Recur.WEEKLY, location = "Parque"))
@@ -59,7 +57,7 @@ class McpTest {
         assertEquals(listOf("calendar_events", "calendar_day", "calendar_holidays"), names(reader))
         val init = rpc(writer, "initialize")
         assertEquals("calendario", init.getJSONObject("serverInfo").getString("name"))
-        assertEquals("hub", init.getJSONObject("_meta").getJSONObject(McpHandler.TOKEN_META).getString("kind"))
+        assertEquals("redirect", init.getJSONObject("_meta").getJSONObject(McpHandler.TOKEN_META).getString("kind"))
     }
 
     @Test fun readsEventsDaysAndHolidays() {
@@ -121,7 +119,7 @@ class McpTest {
 
     @Test fun wrongAndPausedTokensAndHubLink() = runBlocking {
         val body = """{"jsonrpc":"2.0","id":1,"method":"tools/list"}"""
-        assertEquals(401, handler.handle("POST", "/mcp", mapOf("Authorization" to "Bearer ${paused.secret}"), emptyMap(), body).status)
+        assertEquals(401, handler.handle("POST", "/mcp", mapOf("Authorization" to "Bearer wrong_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"), emptyMap(), body).status)
         assertEquals(401, handler.handle("POST", "/mcp", mapOf("Authorization" to "Bearer cld_wrong"), emptyMap(), body).status)
         assertEquals(401, handler.handle("POST", "/mcp", emptyMap(), emptyMap(), body).status)
         assertEquals(200, handler.handle("POST", "/mcp", emptyMap(), mapOf("token" to reader.secret), body).status)
@@ -129,25 +127,35 @@ class McpTest {
         assertTrue(Token.secret().startsWith("cld_"))
         assertEquals("NOT_SAME_DEVELOPER", HubLink.answer(false).getString("error"))
         assertEquals("REDIRECT_OFF", HubLink.answer(true).getString("error"))
-        // «Conectar todas» and Lucía's tools: only for the same developer, and tools only with «Redireccionar a Hub» on.
         assertEquals("NOT_SAME_DEVELOPER", HubLink.connect(false).getString("error"))
         assertEquals("NOT_SAME_DEVELOPER", HubLink.tool(false, "{}").getString("error"))
-        assertEquals("REDIRECT_OFF", HubLink.tool(true, "{}").getString("error"))
+        // Only the same developer (Arka) may connect, disconnect, read the status or run a tool.
+        listOf(HubLink.disconnect(false), HubLink.status(false)).forEach { assertEquals("NOT_SAME_DEVELOPER", it.getString("error")) }
     }
 
-    /** Lucía runs a tool on the phone through the same handler, only while «Redireccionar a Hub» is on. */
+    /** Lucía runs a tool on the phone through the same handler, with or without the public link; Arka turns that on and off. */
     @Test fun luciaRunsToolsOnThePhone() {
         val relay = com.zirakusa.calendario.mcp.McpMode.relayUrl
         com.zirakusa.calendario.mcp.McpMode.relayUrl = ""                                             // no relay in tests
         com.zirakusa.calendario.mcp.McpMode.load(org.robolectric.RuntimeEnvironment.getApplication())
-        com.zirakusa.calendario.mcp.McpMode.redirect(false)
-        assertEquals(null, com.zirakusa.calendario.mcp.McpMode.local("{}"))
-        HubLink.connect(true); assertTrue(com.zirakusa.calendario.mcp.McpMode.hubRedirect)                // «Conectar todas»
+        com.zirakusa.calendario.mcp.McpMode.turnRemote(false)
         val list = JSONObject(com.zirakusa.calendario.mcp.McpMode.local("""{"jsonrpc":"2.0","id":1,"method":"tools/list"}""")!!)
         assertTrue(list.getJSONObject("result").getJSONArray("tools").length() > 0)
         val viaProvider = JSONObject(HubLink.tool(true, """{"jsonrpc":"2.0","id":2,"method":"tools/list"}""").getString("response"))
         assertEquals(2, viaProvider.getInt("id"))
-        com.zirakusa.calendario.mcp.McpMode.redirect(false)
+        assertEquals("BAD_REQUEST", HubLink.tool(true, "").getString("error"))
+        assertEquals("NOT_SAME_DEVELOPER", HubLink.tool(false, "{}").getString("error"))
+        assertTrue(HubLink.status(true).containsKey("remote"))
+        HubLink.connect(true); assertTrue(com.zirakusa.calendario.mcp.McpMode.remote)                 // Arka › «Activar MCP»
+        assertFalse(HubLink.disconnect(true).getBoolean("remote")); assertFalse(com.zirakusa.calendario.mcp.McpMode.remote)
         com.zirakusa.calendario.mcp.McpMode.relayUrl = relay                                          // as the other tests expect
+    }
+
+    /** The hub's token from before Arka took over is kept, so the hub's link keeps working. */
+    @Test fun theOldHubTokenIsKept() {
+        val old = """[{"id":"a","secret":"${"l".repeat(44)}","kind":"llm"},{"id":"b","secret":"${"h".repeat(44)}","kind":"redirect"}]"""
+        assertEquals("h".repeat(44), com.zirakusa.calendario.mcp.Legacy.redirectSecret(old))
+        assertEquals(null, com.zirakusa.calendario.mcp.Legacy.redirectSecret("[]"))
+        assertEquals(null, com.zirakusa.calendario.mcp.Legacy.redirectSecret(""))
     }
 }

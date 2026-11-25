@@ -119,8 +119,7 @@ class ScreenshotsTest {
         compose.onNodeWithText("Domingo").performClick()
         compose.onNodeWithText("Modo MCP").assertExists()
         shot("settings")
-        compose.onNodeWithText("Modo MCP").performClick()
-        compose.onNodeWithText("Redireccionar a Hub").assertExists()
+        compose.onNodeWithText("Lo controla Arka", substring = true).assertExists()
         shot("mcp")
         state.page = Page.MAIN
         state.changeTheme(ThemeMode.LIGHT); state.changeAccent(Accent.AZUL)

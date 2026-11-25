@@ -22,7 +22,7 @@ import java.time.LocalDateTime
 import java.time.YearMonth
 
 /** Pages over the calendar. */
-enum class Page { MAIN, EDITOR, SEARCH, IMPORTANT, SETTINGS, MCP }
+enum class Page { MAIN, EDITOR, SEARCH, IMPORTANT, SETTINGS }
 
 /**
  * The only owner of what the screens show: the view, the day chosen, the events and the one being edited, and the

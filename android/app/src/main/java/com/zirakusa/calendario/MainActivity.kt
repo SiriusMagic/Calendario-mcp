@@ -1,8 +1,6 @@
 package com.zirakusa.calendario
 
 import android.Manifest
-import android.content.ClipData
-import android.content.ClipboardManager
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
@@ -45,7 +43,7 @@ class MainActivity : ComponentActivity() {
         McpMode.load(this)
         Reminders.sync(this)
         open(intent)
-        val actions = AppActions(saved = ::askNotifications, toast = { Toast.makeText(this, it, Toast.LENGTH_SHORT).show() }, copy = ::copy, goToHub = ::goToHub)
+        val actions = AppActions(saved = ::askNotifications, toast = { Toast.makeText(this, it, Toast.LENGTH_SHORT).show() }, openArka = ::openArka)
         setContent {
             CalTheme(state.themeMode, state.accent) {
                 val light = CalColors.isLight
@@ -72,7 +70,6 @@ class MainActivity : ComponentActivity() {
 
     private fun back() = when {
         state.page == Page.EDITOR -> state.closeEditor()
-        state.page == Page.MCP -> state.page = Page.SETTINGS
         state.page != Page.MAIN -> state.page = Page.MAIN
         state.showViews -> state.showViews = false
         else -> state.changeView(View.MONTH)
@@ -85,16 +82,10 @@ class MainActivity : ComponentActivity() {
             notifications.launch(Manifest.permission.POST_NOTIFICATIONS)
     }
 
-    private fun copy(link: String) {
-        getSystemService(ClipboardManager::class.java)?.setPrimaryClip(ClipData.newPlainText("Calendario MCP", link))
-        Toast.makeText(this, R.string.copied, Toast.LENGTH_SHORT).show()
-    }
-
-    /** «Ir al Hub»: copies the hub's link (in case it must be pasted) and opens the Gateway Hub app. */
-    private fun goToHub() {
-        getSystemService(ClipboardManager::class.java)?.setPrimaryClip(ClipData.newPlainText("Calendario › Gateway Hub", McpMode.hubLink()))
+    /** «Modo MCP» in Ajustes: it is turned on, allowed on the phone and given tokens in Arka, so this opens Arka. */
+    private fun openArka() {
         val open = packageManager.getLaunchIntentForPackage("com.zirakusa.gatewayhub")
-        if (open != null) startActivity(open) else Toast.makeText(this, R.string.mcp_paste_in_hub, Toast.LENGTH_LONG).show()
+        if (open != null) startActivity(open) else Toast.makeText(this, R.string.mcp_no_arka, Toast.LENGTH_LONG).show()
     }
 
     companion object { const val EXTRA_DATE = "date" }
