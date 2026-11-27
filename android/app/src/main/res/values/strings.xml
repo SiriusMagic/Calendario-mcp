@@ -102,7 +102,7 @@
     <string name="views">Vistas</string>
     <string name="week_numbers">Mostrar los números de la semana</string>
     <string name="year">Año</string>
-    <string name="mcp_settings_hint">Lo controla Arka: activarlo, permitirlo en local y crear tokens.</string>
+    <string name="mcp_settings_hint">Configura el acceso local y la redirección a Hub.</string>
     <string name="privacy_text">Calendario no tiene anuncios ni estadísticas. Tus eventos y días importantes se guardan solo en este teléfono, fuera de las copias en la nube. Los feriados se calculan en el teléfono. Solo si activas el Modo MCP, la IA que conectes con un token puede leer tus eventos y, si el token es de lectura y escritura, crearlos o eliminarlos a través del relay.</string>
     <string name="mcp_title">Modo MCP</string>
     <string name="mcp_online">Conectado a internet</string>
@@ -129,5 +129,5 @@
     <string name="icon_glass">Cristal</string>
     <string name="icon_pixel">Píxel</string>
     <string name="icon_hint">Cambia el icono de la pantalla de inicio. Algunos lanzadores tardan unos segundos en mostrarlo.</string>
-    <string name="mcp_no_arka">Instala Arka para activar el Modo MCP.</string>
+    <string name="mcp_no_arka">Instala Arka para administrar los enlaces del Hub.</string>
 </resources>

@@ -102,7 +102,7 @@
     <string name="views">Views</string>
     <string name="week_numbers">Show week numbers</string>
     <string name="year">Year</string>
-    <string name="mcp_settings_hint">Controlled from Arka: turning it on, allowing it locally and creating tokens.</string>
+    <string name="mcp_settings_hint">Set up local access and redirection to Hub.</string>
     <string name="privacy_text">Calendario has no ads or analytics. Your events and important days are kept only on this phone, out of cloud backups. Holidays are worked out on the phone. Only if you turn on MCP Mode can the AI you connect with a token read your events and, with a read-and-write token, create or delete them through the relay.</string>
     <string name="mcp_title">MCP mode</string>
     <string name="mcp_online">Connected to the internet</string>
@@ -127,5 +127,5 @@
     <string name="icon_glass">Glass</string>
     <string name="icon_pixel">Pixel</string>
     <string name="icon_hint">Changes the home-screen icon. Some launchers take a few seconds to show it.</string>
-    <string name="mcp_no_arka">Install Arka to turn MCP mode on.</string>
+    <string name="mcp_no_arka">Install Arka to manage Hub connections.</string>
 </resources>

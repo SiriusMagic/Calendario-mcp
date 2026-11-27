@@ -18,6 +18,7 @@ import androidx.core.view.WindowCompat
 import com.zirakusa.calendario.data.SharedValues
 import com.zirakusa.calendario.data.View
 import com.zirakusa.calendario.mcp.McpMode
+import com.zirakusa.calendario.mcp.showMcpOptions
 import com.zirakusa.calendario.ui.AppActions
 import com.zirakusa.calendario.ui.CalState
 import com.zirakusa.calendario.ui.CalendarApp
@@ -82,11 +83,7 @@ class MainActivity : ComponentActivity() {
             notifications.launch(Manifest.permission.POST_NOTIFICATIONS)
     }
 
-    /** «Modo MCP» in Ajustes: it is turned on, allowed on the phone and given tokens in Arka, so this opens Arka. */
-    private fun openArka() {
-        val open = packageManager.getLaunchIntentForPackage("com.zirakusa.gatewayhub")
-        if (open != null) startActivity(open) else Toast.makeText(this, R.string.mcp_no_arka, Toast.LENGTH_LONG).show()
-    }
+    private fun openArka() = showMcpOptions(this)
 
     companion object { const val EXTRA_DATE = "date" }
 }
